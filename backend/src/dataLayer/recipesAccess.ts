@@ -2,20 +2,20 @@ import * as AWS  from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
-import { TodoItem } from '../models/TodoItem'
-import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { RecipeItem } from '../models/recipeItem'
+import { UpdateRecipeRequest } from '../requests/UpdateRecipeRequest'
 
-export class TodosAccess {
+export class RecipesAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly todosTable = process.env.TODOS_TABLE) {
+    private readonly recipesTable = process.env.RECIPES_TABLE) {
   }
 
-  async getAllTodoItems(userId: String): Promise<TodoItem[]> {
-    console.log('Getting all Todos')
+  async getAllRecipesItems(userId: String): Promise<RecipeItem[]> {
+    console.log('Getting all Recipes')
     const result = await this.docClient.query({
-        TableName: this.todosTable,
+        TableName: this.recipesTable,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
           ':userId': userId
@@ -24,43 +24,43 @@ export class TodosAccess {
       }).promise();
     
       const items = result.Items;
-    return items as TodoItem[]
+    return items as RecipeItem[]
   }
 
-  async createTodoItem(todo: TodoItem): Promise<TodoItem> {
+  async createRecipeItem(recipe: RecipeItem): Promise<RecipeItem> {
     await this.docClient.put({
-        TableName: this.todosTable,
-        Item: todo
+        TableName: this.recipesTable,
+        Item: recipe
       }).promise();
 
-    return todo
+    return recipe
   }
 
-  async updateTodoItem(todoId: String, userId: String, updatedTodo: UpdateTodoRequest) {
+  async updateRecipeItem(recipeId: String, userId: String, updatedRecipe: UpdateRecipeRequest) {
     await this.docClient.update({
-        TableName: this.todosTable,
+        TableName: this.recipesTable,
         Key: {
           userId: userId,
-          todoId: todoId
+          recipeId: recipeId
         },
-        UpdateExpression: 'SET #n = :name, dueDate = :dueDate, done = :done',
+        UpdateExpression: 'SET #n = :recipeName, ingredients = :ingredients, method = :method',
         ExpressionAttributeValues : {
-          ':name': updatedTodo.name,
-          ':dueDate': updatedTodo.dueDate,
-          ':done': updatedTodo.done
+          ':recipeName': updatedRecipe.recipeName,
+          ':ingredients': updatedRecipe.ingredients,
+          ':method': updatedRecipe.method
         },
         ExpressionAttributeNames: {
-          '#n': 'name'
+          '#n': 'recipeName'
         }
       }).promise();
   }
 
-  async deleteTodoItem(todoId: String, userId: String) {
+  async deleteRecipeItem(recipeId: String, userId: String) {
     await this.docClient.delete({
-        TableName: this.todosTable,
+        TableName: this.recipesTable,
         Key: {
           userId: userId,
-          todoId: todoId
+          todoId: recipeId
         }
       }).promise();
   }

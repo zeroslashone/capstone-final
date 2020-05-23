@@ -1,36 +1,33 @@
 import * as uuid from 'uuid'
 
-import { TodoItem } from '../models/TodoItem'
-import { TodosAccess } from '../dataLayer/todosAccess'
-import { CreateTodoRequest } from '../requests/CreateTodoRequest'
-import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { RecipeItem } from '../models/recipeItem'
+import { RecipesAccess } from '../dataLayer/recipesAccess'
+import { CreateRecipeRequest } from '../requests/CreateRecipeRequest'
+import { UpdateRecipeRequest } from '../requests/UpdateRecipeRequest'
 
-const todosAccess = new TodosAccess()
+const recipesAccess = new RecipesAccess()
 
-export async function getAllTodos(userId: String): Promise<TodoItem[]> {
-  return todosAccess.getAllTodoItems(userId)
+export async function getAllRecipes(userId: String): Promise<RecipeItem[]> {
+  return recipesAccess.getAllRecipesItems(userId)
 }
 
-export async function createTodo(createTodoRequest: CreateTodoRequest, userId: string
-): Promise<TodoItem> {
+export async function createRecipe(createRecipeRequest: CreateRecipeRequest, userId: string
+): Promise<RecipeItem> {
  
-  const todoId =  uuid.v4();
-  const createdAt = new Date().toISOString()
-  const newTodo = {
+  const recipeId =  uuid.v4();
+  const newRecipe = {
     userId,
-    todoId,
-    createdAt,
-    done: false,
-    ...createTodoRequest
+    recipeId,
+    ...createRecipeRequest
   }
 
-  return todosAccess.createTodoItem(newTodo)
+  return recipesAccess.createRecipeItem(newRecipe)
 }
 
-export async function updateTodo(todoId: String, userId: string, updateTodoRequest: UpdateTodoRequest){
-    return todosAccess.updateTodoItem(todoId, userId, updateTodoRequest)
+export async function updateRecipe(recipeId: String, userId: string, updateRecipeRequest: UpdateRecipeRequest){
+    return recipesAccess.updateRecipeItem(recipeId, userId, updateRecipeRequest)
 }
 
-export async function deleteTodo(todoId: String, userId: string){
-    return todosAccess.deleteTodoItem(todoId, userId)
+export async function deleteRecipe(recipeId: String, userId: string){
+    return recipesAccess.deleteRecipeItem(recipeId, userId)
 }

@@ -1,5 +1,5 @@
 service:
-  name: serverless-todo-app
+  name: serverless-recipe-app
 
 plugins:
   - serverless-webpack
@@ -30,9 +30,9 @@ provider:
           - '*'
 
   environment: 
-    RECIPES_TABLE: todo-serverless-table-${self:provider.stage}
+    RECIPES_TABLE: recipes-${self:provider.stage}
     RECIPE_ID_INDEX: TodoIdIndex
-    RECIPES_S3_BUCKET: todo-1-${self:provider.stage}
+    RECIPES_S3_BUCKET: recipes-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
 custom:
@@ -84,6 +84,7 @@ functions:
           request:
             schema:
               application/json: ${file(src/models/create-recipe-request.json)}
+  
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -96,12 +97,12 @@ functions:
         Resource:
           - '*'
 
-  UpdateTodo:
+  UpdateRecipe:
     handler: src/lambda/http/updateRecipe.handler
     events:
       - http:
           method: patch
-          path: todos/{todoId}
+          path: recipes/{recipeId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -117,11 +118,11 @@ functions:
           - '*' 
 
   DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+    handler: src/lambda/http/deleteRecipe.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: recipes/{recipeId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -140,7 +141,7 @@ functions:
     events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: recipe/{recipeId}/attachment
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -184,23 +185,23 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId   # partitionKey
             AttributeType: S
-          - AttributeName: createdAt  # sortKey
+          - AttributeName: recipeName  # sortKey
             AttributeType: S
-          - AttributeName: todoId   # indexKey
+          - AttributeName: recipeId   # indexKey
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - AttributeName: recipeId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.RECIPES_TABLE}
         GlobalSecondaryIndexes:
           - IndexName: ${self:provider.environment.RECIPE_ID_INDEX}
             KeySchema:
-              - AttributeName: todoId # partitionKey
+              - AttributeName: recipeId # partitionKey
                 KeyType: HASH
-              - AttributeName: createdAt # indexKey
+              - AttributeName: recipeName # indexKey
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL # What attributes will be copied to an index

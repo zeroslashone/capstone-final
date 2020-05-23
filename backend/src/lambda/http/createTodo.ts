@@ -3,7 +3,7 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import getUserId from '../../lambda/utils'
 import { createTodo } from '../../businessLogic/todos'
-import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
+import { CreateRecipeRequest } from '../../requests/CreateRecipeRequest'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event', event);
