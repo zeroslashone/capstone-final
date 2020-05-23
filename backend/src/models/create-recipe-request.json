@@ -9,14 +9,14 @@
       "ingredients": {
         "type": "string"
       },
-      "method": {
+      "recipe": {
           "type": "string"
         }
     },
     "required": [
       "recipeName",
       "ingredients",
-      "method"
+      "recipe"
     ],
     "additionalProperties": true
 }

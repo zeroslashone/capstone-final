@@ -43,11 +43,11 @@ export class RecipesAccess {
           userId: userId,
           recipeId: recipeId
         },
-        UpdateExpression: 'SET #n = :recipeName, ingredients = :ingredients, method = :method',
+        UpdateExpression: 'SET #n = :recipeName, ingredients = :ingredients, recipe = :recipe',
         ExpressionAttributeValues : {
           ':recipeName': updatedRecipe.recipeName,
           ':ingredients': updatedRecipe.ingredients,
-          ':method': updatedRecipe.method
+          ':recipe': updatedRecipe.recipe
         },
         ExpressionAttributeNames: {
           '#n': 'recipeName'

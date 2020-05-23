@@ -4,5 +4,5 @@
 export interface CreateRecipeRequest {
   recipeName: string
   ingredients: string
-  method: string
+  recipe: string
 }

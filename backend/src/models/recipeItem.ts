@@ -3,6 +3,6 @@ export interface RecipeItem {
   recipeId: string
   recipeName: string
   ingredients: string
-  method: string
+  recipe: string
   attachmentUrl?: string
 }

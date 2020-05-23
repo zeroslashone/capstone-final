@@ -72,7 +72,7 @@ functions:
           - 'xray:PutTelemetryRecords'
         Resource:
           - '*'
-      
+  
   CreateRecipe:
     handler: src/lambda/http/createRecipe.handler
     events:
