@@ -3,9 +3,6 @@
     "title": "recipe",
     "type": "object",
     "properties": {
-      "recipeId": {
-        "type": "string"
-      },
       "recipeName": {
         "type": "string"
       },
@@ -17,7 +14,6 @@
         }
     },
     "required": [
-      "recipeId",
       "recipeName",
       "ingredients",
       "method"

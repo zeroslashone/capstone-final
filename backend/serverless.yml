@@ -30,9 +30,9 @@ provider:
           - '*'
 
   environment: 
-    RECIPES_TABLE: recipes-${self:provider.stage}
+    RECIPES_TABLE: recipes-serverless-table-${self:provider.stage}
     RECIPE_ID_INDEX: RecipeIdIndex
-    RECIPES_S3_BUCKET: recipes-${self:provider.stage}
+    RECIPES_S3_BUCKET: recipe-1-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
 custom:
@@ -117,7 +117,7 @@ functions:
         Resource:
           - '*' 
 
-  DeleteTodo:
+  DeleteRecipe:
     handler: src/lambda/http/deleteRecipe.handler
     events:
       - http:
@@ -179,7 +179,7 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi
 
-    TodosDynamoDBTable:
+    RecipesDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
