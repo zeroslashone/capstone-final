@@ -2,15 +2,15 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import getUserId from '../../lambda/utils'
-import { createTodo } from '../../businessLogic/todos'
+import { createRecipe } from '../../businessLogic/recipes'
 import { CreateRecipeRequest } from '../../requests/CreateRecipeRequest'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event', event);
-  const parsedBody: CreateTodoRequest = JSON.parse(event.body);
+  const parsedBody: CreateRecipeRequest = JSON.parse(event.body);
   const userId = getUserId(event)
-  // Implement creating a new TODO item
-  const newTodo = await createTodo(parsedBody, userId)
+  // Implement creating a new Recipe item
+  const newRecipe = await createRecipe(parsedBody, userId)
  
   return {
     statusCode: 201,
@@ -18,7 +18,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
-      item: newTodo
+      item: newRecipe
     })
   }
 }

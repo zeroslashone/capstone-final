@@ -11,40 +11,40 @@ const s3 = new XAWSS3.S3({
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-const todoTable = process.env.TODOS_TABLE;
-const bucketName = process.env.TODOS_S3_BUCKET;
+const recipesTable = process.env.RECIPES_TABLE;
+const bucketName = process.env.RECIPES_S3_BUCKET;
 const urlExpiration = Number(process.env.SIGNED_URL_EXPIRATION);
-const todoIdIndex = process.env.TODO_ID_INDEX
+const recipeIdIndex = process.env.RECIPE_ID_INDEX
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
+  const recipeId = event.pathParameters.recipeId
 
 
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
   const url = s3.getSignedUrl('putObject', {
     Bucket: bucketName,
-    Key: todoId,
+    Key: recipeId,
     Expires: urlExpiration  // The expiration must be a number, received string
   })
 
   const result = await docClient.query({
-    TableName : todoTable,
-    IndexName : todoIdIndex,
-    KeyConditionExpression: 'todoId = :todoId',
+    TableName : recipesTable,
+    IndexName : recipeIdIndex,
+    KeyConditionExpression: 'recipeId = :recipeId',
     ExpressionAttributeValues: {
-        ':todoId': todoId
+        ':recipeId': recipeId
     }
   }).promise()
 
   if (result.Count !=  0){
-    const todo = {
+    const recipe = {
       ...result.Items[0],
-      attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${todoId}`
+      attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${recipeId}`
     }
 
      await docClient.put({
-      TableName: todoTable,
-      Item: todo
+      TableName: recipesTable,
+      Item: recipe
     }).promise();
 
   } else {

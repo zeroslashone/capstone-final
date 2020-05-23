@@ -31,7 +31,7 @@ provider:
 
   environment: 
     RECIPES_TABLE: recipes-${self:provider.stage}
-    RECIPE_ID_INDEX: TodoIdIndex
+    RECIPE_ID_INDEX: RecipeIdIndex
     RECIPES_S3_BUCKET: recipes-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
