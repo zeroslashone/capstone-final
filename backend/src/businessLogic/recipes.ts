@@ -11,6 +11,10 @@ export async function getAllRecipes(userId: String): Promise<RecipeItem[]> {
   return recipesAccess.getAllRecipesItems(userId)
 }
 
+export async function getRecipe(recipeId: String): Promise<RecipeItem> {
+  return recipesAccess.getRecipeItem(recipeId)
+}
+
 export async function createRecipe(createRecipeRequest: CreateRecipeRequest, userId: string
 ): Promise<RecipeItem> {
  
@@ -28,6 +32,6 @@ export async function updateRecipe(recipeId: String, userId: string, updateRecip
     return recipesAccess.updateRecipeItem(recipeId, userId, updateRecipeRequest)
 }
 
-export async function deleteRecipe(recipeId: String, userId: string){
+export async function deleteRecipe(recipeId: String, userId: String){
     return recipesAccess.deleteRecipeItem(recipeId, userId)
 }

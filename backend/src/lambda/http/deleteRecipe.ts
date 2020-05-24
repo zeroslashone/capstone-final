@@ -7,6 +7,7 @@ import { deleteRecipe } from '../../businessLogic/recipes'
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const recipeId = event.pathParameters.recipeId
   const userId = getUserId(event)
+  console.log(userId)
   await deleteRecipe(recipeId, userId)
   
   return {
@@ -16,4 +17,4 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     },
     body: JSON.stringify({})
   }
-} 
+}

@@ -9,7 +9,8 @@ export class RecipesAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly recipesTable = process.env.RECIPES_TABLE) {
+    private readonly recipesTable = process.env.RECIPES_TABLE,
+    private readonly recipesIndex = process.env.RECIPE_ID_INDEX) {
   }
 
   async getAllRecipesItems(userId: String): Promise<RecipeItem[]> {
@@ -25,6 +26,19 @@ export class RecipesAccess {
     
       const items = result.Items;
     return items as RecipeItem[]
+  }
+  async getRecipeItem(recipeId: String): Promise<RecipeItem> {
+    console.log('Getting Recipe for recipeId: ', recipeId)
+    const result = await this.docClient.query({
+      TableName: this.recipesTable,
+      IndexName: this.recipesIndex,
+      KeyConditionExpression: 'recipeId = :recipeId',
+      ExpressionAttributeValues:{
+        ':recipeId': recipeId
+      } 
+    }).promise()
+    const item = result.Items;
+    return item[0] as RecipeItem
   }
 
   async createRecipeItem(recipe: RecipeItem): Promise<RecipeItem> {
@@ -60,7 +74,7 @@ export class RecipesAccess {
         TableName: this.recipesTable,
         Key: {
           userId: userId,
-          todoId: recipeId
+          recipeId: recipeId
         }
       }).promise();
   }
