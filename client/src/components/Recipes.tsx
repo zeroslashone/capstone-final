@@ -45,6 +45,10 @@ export class Recipes extends React.PureComponent<RecipesProps, RecipeState> {
     this.props.history.push(`/recipes/${recipeId}/edit`)
   }
 
+  onViewButtonClick = (recipeId: string) => {
+    this.props.history.push(`/recipes/${recipeId}/view`)
+  }
+
   onRecipeCreate = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
@@ -161,6 +165,15 @@ export class Recipes extends React.PureComponent<RecipesProps, RecipeState> {
               
               <Grid.Column width={10} verticalAlign="middle">
                 {recipe.recipeName}
+              </Grid.Column>
+              <Grid.Column width={1} floated="right">
+                <Button
+                  icon
+                  color="blue"
+                  onClick={() => this.onViewButtonClick(recipe.recipeId)}
+                >
+                  <Icon name="eye" />
+                </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button

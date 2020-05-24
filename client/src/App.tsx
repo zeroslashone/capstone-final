@@ -7,6 +7,7 @@ import { EditRecipe } from './components/EditRecipe'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Recipes } from './components/Recipes'
+import { ViewRecipe } from './components/ViewRecipe'
 
 export interface AppProps {}
 
@@ -103,7 +104,13 @@ export default class App extends Component<AppProps, AppState> {
             return <EditRecipe {...props} auth={this.props.auth} />
           }}
         />
-
+        <Route
+          path="/recipes/:recipeId/view"
+          exact
+          render={props => {
+            return <ViewRecipe {...props} auth={this.props.auth} />
+          }}
+        />
         <Route component={NotFound} />
       </Switch>
     )
