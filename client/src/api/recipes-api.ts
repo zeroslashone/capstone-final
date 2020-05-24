@@ -25,7 +25,7 @@ export async function getRecipe(idToken:String, recipeId: String): Promise<Recip
       'Authorization': `Bearer ${idToken}`
     }
   })
-  console.log(`Recipes: ${response.data}`)
+  console.log(`Recipes: ${response.data.items}`)
   return response.data.items
 }
 

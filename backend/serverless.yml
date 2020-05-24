@@ -161,7 +161,7 @@ functions:
     events:
       - http:
           method: post
-          path: recipe/{recipeId}/attachment
+          path: recipes/{recipeId}/attachment
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -255,6 +255,8 @@ resources:
             - Sid: PublicReadForGetBucketObjects
               Effect: Allow
               Principal: '*'
-              Action: 's3:GetObject'
+              Action: 
+                - 's3:GetObject'
+                - 's3:PutObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.RECIPES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
