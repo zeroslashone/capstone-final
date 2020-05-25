@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { Form, Button, Input } from 'semantic-ui-react'
+import { Form, Button, Input, Grid, Loader} from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getUploadUrl, uploadFile, getRecipe, patchRecipe } from '../api/recipes-api'
 import { Recipe } from '../types/Recipe'
+import { History } from 'history'
 
 enum UploadState {
   NoUpload,
@@ -25,6 +26,7 @@ interface EditRecipeState {
   recipeName: string
   recipe: string
   ingredients: string
+  loadingRecipe: boolean
 }
 
 export class EditRecipe extends React.PureComponent<
@@ -37,6 +39,7 @@ export class EditRecipe extends React.PureComponent<
     recipeName: '',
     recipe: '',
     ingredients: '',
+    loadingRecipe: true
   }
 
   async componentDidMount() {
@@ -50,6 +53,7 @@ export class EditRecipe extends React.PureComponent<
     } catch(e) {
       alert(`Failed to fetch recipe: ${e.message}`)
     }
+    this.setState({loadingRecipe: false})
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +67,6 @@ export class EditRecipe extends React.PureComponent<
 
   handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
-
     try {
       await patchRecipe(this.props.auth.getIdToken(),this.props.match.params.recipeId,{
         recipeName: this.state.recipeName,
@@ -83,6 +86,7 @@ export class EditRecipe extends React.PureComponent<
       await uploadFile(uploadUrl, this.state.file)
 
       alert('Successfully Updated and File was uploaded successfully!')
+      history.back()
     } catch (e) {
       alert('Could not upload a file or could not update data: ' + e.message)
     } finally {
@@ -99,7 +103,33 @@ export class EditRecipe extends React.PureComponent<
   render() {
     return (
       <div>
-        <h1>Update</h1>
+        {this.renderRecipe()}
+      </div>
+    )
+  }
+
+  renderRecipe() {
+    if (this.state.loadingRecipe) {
+      return this.renderLoading()
+    }
+
+    return this.fetchRecipe()
+  }
+
+  renderLoading() {
+    return (
+      <Grid.Row>
+        <Loader indeterminate active inline="centered">
+          Loading Recipe
+        </Loader>
+      </Grid.Row>
+    )
+  }
+
+  fetchRecipe() {  
+    return (
+      <div>
+      <h1>Update</h1>
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
             <label>Name</label>
@@ -143,40 +173,6 @@ export class EditRecipe extends React.PureComponent<
       </div>
     )
   }
-
-  fetchRecipe() {  
-    return (
-      <div>
-        <Form.Field>
-          <label>Name</label>
-          <Input 
-            label ='recipeName'
-            placeholder= 'name'
-            value = {this.state.recipeName}
-            onChange = {event => this.setState({recipeName: event.target.value})}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>ingredients</label>
-          <Input 
-            label ='ingredients'
-            placeholder= 'ingredients'
-            value = {this.state.ingredients}
-            onChange = {event => this.setState({ingredients: event.target.value})}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>recipe</label>
-          <Input 
-            label ='recipe'
-            placeholder= 'recipe'
-            value = {this.state.recipe}
-            onChange = {event => this.setState({recipe: event.target.value})}
-          />
-        </Form.Field>
-      </div>
-    )
-  }
   renderButton() {
 
     return (
@@ -187,7 +183,7 @@ export class EditRecipe extends React.PureComponent<
           loading={this.state.uploadState !== UploadState.NoUpload}
           type="submit"
         >
-          Upload
+          Update
         </Button>
       </div>
     )

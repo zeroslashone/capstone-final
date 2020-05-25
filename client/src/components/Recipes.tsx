@@ -4,13 +4,16 @@ import * as React from 'react'
 import {
   Button,
   Checkbox,
+  Container,
   Divider,
   Grid,
   Header,
   Icon,
   Input,
   Image,
+  Segment,
   Form,
+  Card,
   Loader
 } from 'semantic-ui-react'
 
@@ -37,7 +40,7 @@ export class Recipes extends React.PureComponent<RecipesProps, RecipeState> {
     newRecipeName: '',
     ingredients: '',
     recipe: '',
-    loadingRecipes: false
+    loadingRecipes: true
   }
 
 
@@ -109,8 +112,7 @@ export class Recipes extends React.PureComponent<RecipesProps, RecipeState> {
         <Form.Field>
           <label>Name</label>
           <Input 
-            label ='recipeName'
-            placeholder= 'name'
+            placeholder= 'Enter name...'
             value = {this.state.newRecipeName}
             onChange = {event => this.setState({newRecipeName: event.target.value})}
           />
@@ -118,8 +120,7 @@ export class Recipes extends React.PureComponent<RecipesProps, RecipeState> {
         <Form.Field>
           <label>ingredients</label>
           <Input 
-            label ='ingredients'
-            placeholder= 'ingredients'
+            placeholder= 'Enter the ingredients...'
             value = {this.state.ingredients}
             onChange = {event => this.setState({ingredients: event.target.value})}
           />
@@ -127,8 +128,7 @@ export class Recipes extends React.PureComponent<RecipesProps, RecipeState> {
         <Form.Field>
           <label>recipe</label>
           <Input 
-            label ='recipe'
-            placeholder= 'recipe'
+            placeholder= 'enter the recipe....'
             value = {this.state.recipe}
             onChange = {event => this.setState({recipe: event.target.value})}
           />
@@ -157,53 +157,37 @@ export class Recipes extends React.PureComponent<RecipesProps, RecipeState> {
   }
 
   renderRecipesList() {
-    return (
-      <Grid padded>
-        {this.state.recipes.map((recipe, pos) => {
-          return (
-            <Grid.Row key={recipe.recipeId}>
-              
-              <Grid.Column width={10} verticalAlign="middle">
-                {recipe.recipeName}
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="blue"
-                  onClick={() => this.onViewButtonClick(recipe.recipeId)}
-                >
-                  <Icon name="eye" />
-                </Button>
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="blue"
-                  onClick={() => this.onEditButtonClick(recipe.recipeId)}
-                >
-                  <Icon name="pencil" />
-                </Button>
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="red"
-                  onClick={() => this.onRecipeDelete(recipe.recipeId)}
-                >
-                  <Icon name="delete" />
-                </Button>
-              </Grid.Column>
-              {recipe.attachmentUrl && (
-                <Image src={recipe.attachmentUrl} size="small" wrapped />
-              )}
-              <Grid.Column width={16}>
-                <Divider />
-              </Grid.Column>
-            </Grid.Row>
-          )
-        })}
-      </Grid>
-    )
-  }
-
+      return (
+        <Container>
+          <Divider horizontal><h3>Your Recipes</h3></Divider>
+  
+          <Grid>
+            {this.state.recipes.map((recipe, pos) => {
+              return (
+                <Grid.Row key={recipe.recipeId} horizontalAlign="left">
+                  <Grid.Column width={5}>
+                      <Image src={recipe.attachmentUrl} size="medium"/>
+                  </Grid.Column>
+                  <Grid.Column width={6}>
+                      <h2>{recipe.recipeName} </h2>
+                      <Divider vertical/>
+                    <Grid.Column width={6}>
+                        <Button icon color="blue" onClick={() => this.onEditButtonClick(recipe.recipeId)} >
+                          <Icon name="pencil" />
+                        </Button>
+                        <Button icon color="green" onClick={() => this.onViewButtonClick(recipe.recipeId)} >
+                          <Icon name="eye" />
+                        </Button>
+                      <Button icon color="red" onClick={() => this.onRecipeDelete(recipe.recipeId)}>
+                        <Icon name="trash" />  
+                      </Button>
+                    </Grid.Column>
+                  </Grid.Column>
+                </Grid.Row>              
+              )
+            })}
+          </Grid>
+        </Container>
+      )
+    }
 }
